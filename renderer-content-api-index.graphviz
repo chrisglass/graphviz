@@ -10,7 +10,7 @@ digraph {
   	SQS[shape=box];
   	QueueConsumer;
   	RenderQueue->QueueConsumer;
-  	QueueConsumer->SQS[label=" Delete\nConsumed\nMsg"];
+  	QueueConsumer->SQS[label="Delete\nConsumed\nMsg"];
   }
 
   subgraph cluster_persist {
@@ -34,11 +34,11 @@ digraph {
 
   subgraph cluster_akka {
   	color=dodgerblue1;
-  	IndexBuilder[label="Index\nDownloader"];
+  	IndexBuilder[label="Index\nBuilder"];
   	QueueConsumer[label="Queue Consumer"];
   	IndexDownloader[label="Index\nDownloader"];
 
-  	QueueConsumer->IndexBuilder[label=" Builder\nMessage"];
+  	QueueConsumer->IndexBuilder[label="Builder\nMessage"];
   	IndexBuilder->IndexDownloader;
   	IndexDownloader->ContentFetcher;
   	IndexDownloader->IndexParser;
@@ -72,10 +72,10 @@ digraph {
   	color=dodgerblue1;
 
   	Aggregator[label="Aggregate\nChildren"];
-	ChildParser->Aggregator;
-	ChildParser1->Aggregator;
-  	Aggregator->Uploader[label=" Aggregated\nContent"];
+	  ChildParser->Aggregator;
+	  ChildParser1->Aggregator;
+  	Aggregator->Uploader[label="Aggregated\nContent"];
   	Uploader->ContentRepository;
-  	Uploader->QueueConsumer[label=" Done"];
+  	Uploader->IndexBuilder[label="Done"];
   }
 }

@@ -1,0 +1,51 @@
+digraph {
+  edge[style=dashed];
+  node[shape=plaintext]
+  style=dotted;
+
+  subgraph cluster_consumer {
+  	color=darkgoldenrod2;
+
+  	RenderQueue[label="Render Queue", shape=box];
+  	SQS[shape=box];
+  	QueueConsumer;
+  	RenderQueue->QueueConsumer;
+  	QueueConsumer->SQS[label=" Delete\nConsumed\nMsg"];
+  }
+
+  subgraph cluster_persist {
+  	color=deeppink;
+  	s3[label="S3 Bucket", shape=box3d];
+  	Uploader;
+  	ContentRepository[label="Content\nRepository"];
+  	ContentRepository->s3;
+  }
+
+  subgraph cluster_fetch {
+  	color=deeppink;
+
+  	ContentFetcher[label="Content\nFetcher"];
+  	ContentApi[label="Content API", shape=box];
+    ContentFetcher->ContentApi;
+  }
+
+  subgraph cluster_akka {
+  	color=dodgerblue1;
+  	StoryBuilder[label="Story\nBuilder"];
+  	QueueConsumer[label="Queue Consumer"];
+  	StoryDownloader[label="Story\nDownloader"];
+
+  	QueueConsumer->StoryBuilder[label=" Builder\nMessage"];
+  	StoryBuilder->StoryDownloader;
+  	StoryDownloader->ContentFetcher;
+  	StoryDownloader->StoryParser;
+    StoryParser->Uploader;
+  }  
+
+  subgraph cluster_aggregate {
+  	color=dodgerblue1;
+
+  	Uploader->ContentRepository;
+  	Uploader->StoryBuilder[label=" Done"];
+  }
+}
