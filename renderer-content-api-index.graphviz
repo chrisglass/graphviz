@@ -1,0 +1,81 @@
+digraph {
+  edge[style=dashed];
+  node[shape=plaintext]
+  style=dotted;
+
+  subgraph cluster_consumer {
+  	color=darkgoldenrod2;
+
+  	RenderQueue[label="Render Queue", shape=box];
+  	SQS[shape=box];
+  	QueueConsumer;
+  	RenderQueue->QueueConsumer;
+  	QueueConsumer->SQS[label=" Delete\nConsumed\nMsg"];
+  }
+
+  subgraph cluster_persist {
+  	color=deeppink;
+  	s3[label="S3 Bucket", shape=box3d];
+  	Uploader;
+  	ContentRepository[label="Content\nRepository"];
+  	ContentRepository->s3;
+  }
+
+  subgraph cluster_fetch {
+  	color=deeppink;
+
+  	ContentFetcher[label="Content\nFetcher"];
+  	ContentApi[label="Content API", shape=box];
+    LinkedDataApi[label="Linked Data API", shape=box];
+
+    ContentFetcher->ContentApi;
+    ContentFetcher->LinkedDataApi;
+  }
+
+  subgraph cluster_akka {
+  	color=dodgerblue1;
+  	IndexBuilder[label="Index\nDownloader"];
+  	QueueConsumer[label="Queue Consumer"];
+  	IndexDownloader[label="Index\nDownloader"];
+
+  	QueueConsumer->IndexBuilder[label=" Builder\nMessage"];
+  	IndexBuilder->IndexDownloader;
+  	IndexDownloader->ContentFetcher;
+  	IndexDownloader->IndexParser;
+  }
+
+  subgraph cluster_child {
+  	color=dodgerblue1;
+
+  	IndexParser[label="Index\nParser"];
+
+  	ChildBuilder[label="Child\nBuilder"];
+  	ChildDownloader[label="Child\nDownloader"];
+  	ChildParser[label="Child\nParser"];
+	
+  	ChildBuilder1[label="Child\nBuilder"];
+  	ChildDownloader1[label="Child\nDownloader"];
+  	ChildParser1[label="Child\nParser"];
+
+  	IndexParser->ChildBuilder;
+  	ChildBuilder->ChildDownloader;
+  	ChildDownloader->ChildParser;
+  	ChildDownloader->ContentFetcher;
+
+  	IndexParser->ChildBuilder1;
+  	ChildBuilder1->ChildDownloader1;
+  	ChildDownloader1->ChildParser1;
+  	ChildDownloader1->ContentFetcher;
+  }
+
+  subgraph cluster_aggregate {
+  	color=dodgerblue1;
+
+  	Aggregator[label="Aggregate\nChildren"];
+	ChildParser->Aggregator;
+	ChildParser1->Aggregator;
+  	Aggregator->Uploader[label=" Aggregated\nContent"];
+  	Uploader->ContentRepository;
+  	Uploader->QueueConsumer[label=" Done"];
+  }
+}

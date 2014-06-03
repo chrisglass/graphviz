@@ -1,0 +1,65 @@
+digraph {
+
+API [shape=box, label="Moments API"];
+CacheRepo [shape=box, label="Cached Data Repository"];
+JsonCache [shape=box3d, label="JSON Cache"];
+MomentsCache [shape=box3d, label="Moments Cache"];
+CamelRepo [shape=box, label="Camel Data Repository"];
+ProducerTemplate [shape=box, label="Camel Producer"];
+MomentsRepo [shape=box, label="Moments Data Repository"];
+MomentsRequestProcessor [label="Moments Request Processor"];
+
+subgraph cluster_momentsapi {
+  label = "Moments API";
+  API -> CacheRepo;
+  CacheRepo -> JsonCache[dir=both];
+  CacheRepo -> CamelRepo;
+}
+
+subgraph cluster_pushapi {
+  label = "Push API";
+  PushAPI [shape=box, label = "Push API"];
+  PushProducer [shape=box, label="Push Producer"];
+  PulsarTransformWorker2 [label="Pulsar Transform Worker"];
+  CacheProcessor [label="Cache Processor"];
+PushAPI -> PushProducer;
+PushProducer -> PulsarTransformWorker2;
+PulsarTransformWorker2 -> CacheProcessor;
+
+
+}
+
+CacheProcessor -> MomentsCache;
+
+CamelRepo -> ProducerTemplate;
+ProducerTemplate -> MomentsRequestProcessor;
+MomentsRequestProcessor -> MomentsRepo[dir=both];
+MomentsRequestProcessor -> MomentsAggregator;
+MomentsAggregator -> MomentsFilter;
+MomentsFilter -> MomentsToJson;
+MomentsToJson -> ProducerTemplate;
+
+subgraph cluster_m1 {
+  label = "Request and cache";
+  MomentsRepo -> SingleRequestProducer [dir=both];
+  SingleRequestProducer [shape=box, label="Single Request Producer"];
+  SingleRequestProducer -> PulsarRequestWorker;
+  PulsarRequestWorker -> Pulsar [dir=both];
+  PulsarRequestWorker -> PulsarTransformWorker;
+  PulsarTransformWorker -> SingleRequestProducer;
+  MomentsRepo -> MomentsCache[dir=both];
+}
+
+
+
+subgraph cluster_subscription {
+  label = "Subscription";
+  SubscriptionManager -> SubscriptionList;
+  SubscriptionList[shape=box]
+ 
+}
+
+ SubscriptionManager -> CacheRepo [label="no-cache"];
+
+
+}

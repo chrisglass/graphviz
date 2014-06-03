@@ -1,0 +1,130 @@
+digraph {
+
+subgraph cluster_forgeSandbox {
+  label="Forge Sandbox";
+  color= darkorchid4;
+  style=dotted;
+
+  sandbox_iSite2Api[shape=box, label="isite2-api"];
+}
+
+subgraph cluster_cosmosSandbox {
+  label="sandbox-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  sandbox_SNS[label="SNS"];
+  sandbox_iSite2Api->sandbox_SNS;
+}
+
+
+
+
+subgraph cluster_forgeLive {
+  label="Forge Live";
+  color=green;
+  style=dotted;
+
+  live_iSite2Api[shape=box, label="isite2-api"];
+}
+
+subgraph cluster_cosmosLive {
+  label="live-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  live_SNS[label="SNS"];
+  live_iSite2Api->live_SNS;
+}
+
+
+
+subgraph cluster_forgeStage {
+  label="Forge Stage";
+  color=green;
+  style=dotted;
+
+  stage_iSite2Api[shape=box, label="isite2-api"];
+}
+
+subgraph cluster_cosmosStage {
+  label="stage-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  stage_SNS[label="SNS"];
+  stage_iSite2Api->stage_SNS;
+}
+
+
+subgraph cluster_forgeTest {
+  label="Forge Test";
+  color=green;
+  style=dotted;
+
+  test_iSite2Api[shape=box, label="isite2-api"];
+}
+
+subgraph cluster_cosmosTest {
+  label="test-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  test_SNS[label="SNS"];
+  test_iSite2Api->test_SNS;
+}
+
+subgraph cluster_forgeInt {
+  label="Forge Int";
+  color=green;
+  style=dotted;
+
+  int_iSite2Api[shape=box, label="isite2-api"];
+}
+
+subgraph cluster_cosmosInt {
+  label="int-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  int_SNS[label="SNS"];
+  int_iSite2Api->int_SNS;
+}
+
+subgraph cluster_client_SQS {
+  color=darkgoldenrod2;
+  style=dotted;
+  live_client_SQS[label="Client SQS"];
+  stage_client_SQS[label="Client SQS"];
+  test_client_SQS[label="Client SQS"];
+  int_client_SQS[label="Client SQS"];
+  int_SNS->int_client_SQS;
+  test_SNS->test_client_SQS;
+  stage_SNS->stage_client_SQS;
+  live_SNS->live_client_SQS;
+}
+
+
+subgraph cluster_cosmosIntegrationTestResources {
+  label="integration-test-resources";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  itestSQS[label="SQS"];
+  sandbox_SNS->itestSQS;
+  int_SNS->itestSQS;
+  test_SNS->itestSQS;
+}
+
+
+subgraph cluster_testApp {
+  label="test app";
+  color=darkgoldenrod2;
+  style=dotted;
+
+  testApp[label="isite2-notifications"];
+  itestSQS->testApp;
+}
+
+
+}
