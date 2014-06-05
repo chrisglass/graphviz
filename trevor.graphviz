@@ -1,0 +1,53 @@
+digraph {
+  edge[style=dashed];
+  
+  style=dotted;
+
+  Client->Akamai;
+  Akamai->ContentEndpoint;
+  Akamai->PolicyEndpoint;
+  Akamai->LayoutEndpoint;
+
+  RenderingQueue->QueueConsumer;
+  CPSTopic->RenderingQueue;
+  LDPTopic->RenderingQueue;
+
+  subgraph cluster_awsS3 {
+    S3;
+  }
+
+  subgraph cluster_awsSQS {
+    RenderingQueue[label="SQS"];
+  }
+
+  subgraph cluster_forge {
+    ContentAPI;
+    LinkedDataAPI;
+  }  
+
+  subgraph cluster_producer {
+    Producer[shape=plaintext];
+
+    PolicyEndpoint[label="Policy"];
+    LayoutEndpoint[label="Layout"];
+    ContentEndpoint[label="Content"];
+    PolicyEndpoint->S3;
+    LayoutEndpoint->S3;
+    ContentEndpoint->Cache;
+    ContentEndpoint->S3;
+    ContentEndpoint->RenderingQueue;
+  }
+
+  subgraph cluster_renderer {
+    Renderer[shape=plaintext];
+
+    QueueConsumer->Akka;
+    Akka->Fetcher;
+    Akka->Transformer;
+    Akka->Uploader;
+    Uploader->S3;
+      
+    Fetcher->ContentAPI;
+    Fetcher->LinkedDataAPI;
+  }
+}
