@@ -1,0 +1,103 @@
+digraph {
+  edge[style=dashed];
+  node[shape=plaintext]
+  style=dotted;
+
+  subgraph cluster_producer {
+    color=darkgoldenrod2;
+    Producer[label="Producer", shape=box];
+  }
+
+  subgraph cluster_sns {
+    color=darkgoldenrod2;
+    label="SNS";
+
+    sns_CPS[label="CPS Topic", shape=box];
+    #sns_LDP[label="LDP Topic", shape=box];
+
+  }
+
+  subgraph cluster_sqs {
+    color=darkgoldenrod2;
+    label="SQS";
+
+    sqs_CPS[label="CPS Notifications", shape=box];
+    #sqs_LDP[label="LDP Notifications", shape=box];
+
+    sns_CPS->sqs_CPS;
+    #sns_LDP->sqs_LDP;
+
+    sqs_CPSRequests[label="CPS Requests", shape=box];
+    #sqs_LDPRequests[label="LDP Requests", shape=box];
+
+    Producer->sqs_CPSRequests;
+    #Producer->sqs_LDPRequests;
+
+    RequestDeDuper[label="Request De-Duper"];
+    ProducerRequestParser->RequestDeDuper;
+    
+    sqs_CPSRequests->ProducerRequestParser;
+    sqs_CPS->CPSNotificationsRequestParser;
+
+  }
+
+  subgraph cluster_cps {
+    color=deeppink;
+    ContentAPI[label="Content API", shape=box];
+    ContentRepository[label="Content Repository"];
+  }
+
+  subgraph cluster_request {
+    color=deeppink;
+    
+    ProducerRequestParser[label="Producer\nRequest Parser"];
+    CPSNotificationsRequestParser[label="Notifications\nRequest Parser"];
+
+    RequestDeDuper->Fetcher;
+    CPSNotificationsRequestParser->Fetcher;
+
+    Fetcher->ContentRepository;
+    ContentRepository->ContentAPI;
+    Fetcher->Transformer;
+
+
+    Transformer->ChildFetcher;
+    ChildFetcher->ContentRepository;
+    ChildFetcher->ContentRepository;
+    ChildFetcher->ContentRepository;
+
+    ChildTransformer[label="Transformer"];
+
+    ChildFetcher->ChildTransformer;
+    ChildFetcher->ChildTransformer;
+    ChildFetcher->ChildTransformer;
+
+    ChildTransformer->Aggregator;
+    ChildTransformer->Aggregator;
+    ChildTransformer->Aggregator;
+
+    Transformer2[label="Transformer"];
+    Aggregator->Transformer2;
+    Transformer2->Uploader;
+    Transformer2->GZipper;
+
+    GZipper->Uploader;
+  }
+
+  subgraph cluster_persist {
+    color=deeppink;
+    s3[label="S3 Bucket", shape=box3d];
+    Uploader;
+    Uploader->S3Repository;
+    Uploader->S3Repository;
+    S3Repository[label="S3\nRepository"];
+    S3Repository->s3;
+    S3Repository->s3;
+  }
+
+
+
+
+  
+
+}
