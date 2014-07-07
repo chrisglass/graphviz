@@ -1,0 +1,99 @@
+digraph {
+  node[shape=plaintext]
+  style=dotted;
+
+  subgraph cluster_amazonSNS {
+    color=darkgoldenrod2;
+    cpsTopic[label="CPS Notifications Topic"];
+  }
+
+  cpsRouter[label="CPS Router"];
+  cpsTopic->cpsRouter;
+  cpsRouter->a_cpsHttpRequestBuilder;
+  cpsRouter->b_cpsHttpRequestBuilder;
+
+  subgraph cluster_amazonS3 {
+    color=darkgoldenrod2;
+    s3[label="Amazon S3"]; 
+  }
+
+  subgraph cluster_forge {
+    color=darkgoldenrod2;
+    contentApi[label="ContentApi"];
+  }
+
+  subgraph cluster_persist {
+    a_trevorToJson->a_filenameGenerator;
+    a_filenameGenerator->a_zipContent;
+    a_zipContent->s3;
+    a_filenameGenerator->s3; 
+  }
+
+  subgraph cluster_story {
+    label="Story Route";
+    a_cpsHttpRequestBuilder[label="CPS HttpRequest Builder"];
+    a_fetcher[label="Fetcher"];
+    a_filenameGenerator[label="CPS FileNameGenerator"];
+    a_jsonToCps[label="ModelApi: Json to CPS"];
+    a_cpsToTrevor[label="ModelApi: CPS to Trevor"];
+    a_trevorToJson[label="ModelApi: Trevor to Json"];
+    a_zipContent[label="GZip"];
+
+    a_cpsHttpRequestBuilder->a_fetcher;
+	  a_fetcher->contentApi;
+    a_fetcher->a_jsonToCps;
+    a_jsonToCps->a_cpsToTrevor;
+    a_cpsToTrevor->a_trevorToJson;
+    
+  }
+
+  subgraph cluster_index {
+    label="Index Route";
+
+    b_cpsHttpRequestBuilder[label="CPS HttpRequest Builder"];
+    b_fetcher[label="Fetcher"];
+    b_fetcher2[label="Fetcher"];
+    
+    b_jsonToCps[label="ModelApi: Json to CPS"];
+    b_cpsToTrevor[label="ModelApi: CPS to Trevor"];
+    b_aggregateIndexAndAssets[label="ModelApi: Aggregate Assets"]
+    b_cpsToUris[label="Get URIs for Child Assets"];
+    b_cpsHttpRequestBuilder2[label="CPS HttpRequest Builder"];
+    b_jsonToCps2[label="ModelApi: Json to CPS"];
+    b_cpsToTrevor2[label="ModelApi: CPS to Trevor"];
+
+    b_cpsHttpRequestBuilder->b_fetcher;
+    b_fetcher->contentApi;
+    b_fetcher->b_jsonToCps;
+    b_jsonToCps->b_cpsToTrevor;
+    b_cpsToTrevor->b_cpsToUris;
+    
+    b_cpsToUris->b_cpsHttpRequestBuilder2;
+    b_cpsHttpRequestBuilder2->b_fetcher2;
+    b_fetcher2->contentApi;
+    b_fetcher2->b_jsonToCps2;
+    b_jsonToCps2->b_cpsToTrevor2;
+    b_cpsToTrevor2->b_aggregateIndexAndAssets;
+
+# START duplicate routes (for multiple arrows)
+    b_cpsToUris->b_cpsHttpRequestBuilder2;
+    b_cpsHttpRequestBuilder2->b_fetcher2;
+    b_fetcher2->contentApi;
+    b_fetcher2->b_jsonToCps2;
+    b_jsonToCps2->b_cpsToTrevor2;
+    b_cpsToTrevor2->b_aggregateIndexAndAssets;
+    
+    b_cpsToUris->b_cpsHttpRequestBuilder2;
+    b_cpsHttpRequestBuilder2->b_fetcher2;
+    b_fetcher2->contentApi;
+    b_fetcher2->b_jsonToCps2;
+    b_jsonToCps2->b_cpsToTrevor2;
+    b_cpsToTrevor2->b_aggregateIndexAndAssets;
+
+# END duplicate routes (for multiple arrows)
+
+    b_aggregateIndexAndAssets->a_trevorToJson;
+  }
+
+
+}
