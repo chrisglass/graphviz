@@ -1,5 +1,8 @@
 suff=graphviz
 
+while :
+do
+
 rm -f target/*.png
 
 for i in $(ls *.$suff)
@@ -11,3 +14,7 @@ do
   echo "Rendered $out"
 done
 
+
+sleep 2
+
+done

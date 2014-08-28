@@ -1,0 +1,45 @@
+digraph {
+  edge[style=dashed];
+  style=dotted;
+
+  InputJSON->CPSModel;
+  CPSModel->TrevorModel;
+  CPSModel->CPSToURIs;
+  
+  Aggregate->TrevorModel;
+  CPSModel->MapURIToSecondaryType;
+  
+
+  MapURIToSecondaryType->URIToTypeMap;
+  
+
+  TrevorModel->SetSecondaryType;
+  SetSecondaryType->URIToTypeMap;
+
+  SetSecondaryType->OutputJSON;
+
+  subgraph cluster_homeRelation {
+  	FetchHomeRelation->HomeRelationJSONToCPS;
+  	HomeRelationJSONToCPS->HomeRelationCPSToTrevor;
+  	HomeRelationCPSToTrevor->HomeRelation;
+  }
+
+   CPSToURIs->GetJSON;
+
+  subgraph cluster_subItem {
+
+	
+  	GetJSON->AssetJsonToCPS;
+  	AssetJsonToCPS->FetchHomeRelation;
+  	AssetJsonToCPS->TrevorSubItem;
+  	TrevorSubItem->AddHomeRelation;
+  	AddHomeRelation->HomeRelation;
+  	
+
+  }
+
+
+  AddHomeRelation->Aggregate;
+  
+
+}

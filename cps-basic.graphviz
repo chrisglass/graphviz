@@ -1,0 +1,89 @@
+digraph {
+  edge[style=dashed];
+  style=dotted;
+
+  subgraph cluster_reith {
+  	label="Reith";
+  	color=deeppink;
+  	OracleDB[shape=box3d];
+  	CPS[shape=box];
+  	Journalist[shape=plaintext];
+    Journalist->CPS;
+    CPS->OracleDB;
+
+    IPMQ1[label="IPMQ"];
+    CPS->IPMQ1;
+
+    
+  }
+
+  subgraph cluster_forge {
+  	label="Forge";
+  	color= darkorchid4;
+  	ContentStore[shape=box3d];
+  	CPSPublisher[shape=box];
+  	ContentApi[shape=box];
+  	
+  	
+  	IPMQ2[label="IPMQ"];
+  	IPMQ1->IPMQ2;
+  	IPMQ2->CPSPublisher;
+    CPSPublisher->ContentStore;
+
+    ContentApi->ContentStore;
+  }
+
+
+subgraph cluster_renderer {
+  	
+  	color=darkgoldenrod2;
+  	Renderer[shape=box];
+  	SQS[label="SQS"];
+  	S3[shape=box3d];
+  	CPSPublisher->SQS;
+  	
+  	
+	
+  	SQS->Renderer;
+  	Renderer->S3;
+  	
+  }
+
+  subgraph cluster_trevor {
+  	
+  	color=darkgoldenrod2;
+  	
+  	Producer[shape=box];
+  	S3[shape=box3d];
+  	
+	Producer->SQS;
+  	
+  	
+  	Producer->S3;
+  }
+
+
+  subgraph cluster_apigee {
+  	color=green;
+  	Apigee[shape=box];
+  	Renderer->Apigee;
+  	Apigee->ContentApi;
+  }
+
+  subgraph cluster_CDN {
+  	CDN[shape=box];
+  	CDN->Producer;
+  }
+
+  subgraph cluster_apps {
+  	User[shape=plaintext];
+  	IOSApp[shape=box];
+  	AndroidApp[shape=box];
+  	User->IOSApp;
+  	User->AndroidApp;
+  	IOSApp->CDN;
+  	AndroidApp->CDN;
+  }
+
+
+}

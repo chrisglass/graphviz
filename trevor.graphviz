@@ -8,16 +8,16 @@ digraph {
   Akamai->PolicyEndpoint;
   Akamai->LayoutEndpoint;
 
-  RenderingQueue->QueueConsumer;
-  CPSTopic->RenderingQueue;
-  LDPTopic->RenderingQueue;
+  CPSTopic->CPSNotificationsQueue;
 
   subgraph cluster_awsS3 {
     S3;
   }
 
   subgraph cluster_awsSQS {
-    RenderingQueue[label="SQS"];
+    CPSNotificationsQueue[label="CPS Notifications Queue"];
+    ProducerCPSQueue[label="Producer CPS Queue"];
+    ProducerLDPQueue[label="Producer LDP Queue"];
   }
 
   subgraph cluster_forge {
@@ -35,19 +35,30 @@ digraph {
     LayoutEndpoint->S3;
     ContentEndpoint->Cache;
     ContentEndpoint->S3;
-    ContentEndpoint->RenderingQueue;
+    ContentEndpoint->ProducerCPSQueue;
+    ContentEndpoint->ProducerLDPQueue;
+  }
+
+  subgraph cluster_modelApi {
+    ModelApi;
   }
 
   subgraph cluster_renderer {
     Renderer[shape=plaintext];
 
-    QueueConsumer->Akka;
-    Akka->Fetcher;
-    Akka->Transformer;
-    Akka->Uploader;
-    Uploader->S3;
+    CPSNotificationsQueue->CPSRoute;
+    ProducerCPSQueue->CPSRoute;
+    ProducerLDPQueue->LDPRoute;
+    LDPRoute->HttpClient;
+    CPSRoute->HttpClient;
+    CPSRoute->ModelApi[label="transform"];
+    LDPRoute->ModelApi;
+    LDPRoute->S3;
+    CPSRoute->S3;
       
-    Fetcher->ContentAPI;
-    Fetcher->LinkedDataAPI;
+    HttpClient->ContentAPI;
+    HttpClient->LinkedDataAPI;
   }
+
+
 }

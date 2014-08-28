@@ -1,0 +1,78 @@
+digraph {
+
+	graph [rankdir="LR"];
+
+	subgraph cluster_liveCPS {
+	  
+	  color= darkorchid4;
+	  style=dotted;
+
+	  live_contentApi[shape=box, label="Live - Content API"];
+	}
+
+	subgraph cluster_testLDP {
+	  
+	  color= darkorchid4;
+	  style=dotted;
+
+	  test_ldp[shape=box, label="Test - LDP Core API"];
+	}
+
+	subgraph cluster_liveLDP {
+	  
+	  color= darkorchid4;
+	  style=dotted;
+
+	  live_ldp[shape=box, label="Live - LDP Core API"];
+	}
+
+	subgraph cluster_intDevUtils {
+	  color= darkorchid4;
+	  style=dotted;
+
+	  int_devUtils[shape=box, label="Int - Trevor Dev Utils"];
+	}
+
+	subgraph cluster_apigee {
+		
+		color= darkorchid4;
+	  	style=dotted;
+
+	  	apigee[shape=box, label="Apigee"];
+
+	  	apigee->live_contentApi[label = "max 20 requests per second"];
+	}
+
+	subgraph cluster_intRenderer {
+	  label="Int";
+	  color= darkorchid4;
+	  style=dotted;
+
+	  int_renderer[shape=box, label="Renderer"];
+	  int_renderer->int_devUtils[label=" fake cps "];
+	  int_renderer->int_devUtils[label=" fake ldp "];
+	}
+
+	subgraph cluster_testRenderer {
+	  label="Test";
+	  color= darkorchid4;
+	  style=dotted;
+
+	  test_renderer[shape=box, label="Renderer"];
+
+	  test_renderer->apigee;
+	  test_renderer->test_ldp;
+	}
+
+	subgraph cluster_liveRenderer {
+	  label="Live";
+	  color= darkorchid4;
+	  style=dotted;
+
+	  live_renderer[shape=box, label="Renderer"];
+	  live_renderer->apigee;
+	  live_renderer->live_ldp;
+	}
+
+}
+
