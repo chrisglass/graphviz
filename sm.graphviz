@@ -1,0 +1,32 @@
+digraph {
+	StrategicMonitoring[label = "Strategic Monitoring"];
+	Issues;
+	Visits;
+	Actions;
+	Reports;
+	IssuesUI[label = "UI"];
+	IssuesAPI[label = "API"];
+	VisitsUI[label = "UI"];
+	VisitsAPI[label = "API"];
+	ActionsUI[label = "UI"];
+	ActionsAPI[label = "API"];
+	ReportsUI[label = "UI"];
+	ReportsAPI[label = "API"];
+
+	StrategicMonitoring->Issues;
+	StrategicMonitoring->Visits;
+	StrategicMonitoring->Actions;
+	StrategicMonitoring->Reports;
+
+	Issues->IssuesUI;
+	Issues->IssuesAPI;
+
+	Visits->VisitsUI;
+	Visits->VisitsAPI;
+
+	Actions->ActionsUI;
+	Actions->ActionsAPI;
+
+	Reports->ReportsUI;
+	Reports->ReportsAPI;
+}
