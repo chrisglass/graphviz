@@ -1,5 +1,5 @@
 digraph {
-	StrategicMonitoring[label = "Strategic Monitoring"];
+	Monitoring[label = "Monitoring"];
 	Issues;
 	Visits;
 	Actions;
@@ -13,10 +13,10 @@ digraph {
 	ReportsUI[label = "UI"];
 	ReportsAPI[label = "API"];
 
-	StrategicMonitoring->Issues;
-	StrategicMonitoring->Visits;
-	StrategicMonitoring->Actions;
-	StrategicMonitoring->Reports;
+	Monitoring->Issues;
+	Monitoring->Visits;
+	Monitoring->Actions;
+	Monitoring->Reports;
 
 	Issues->IssuesUI;
 	Issues->IssuesAPI;

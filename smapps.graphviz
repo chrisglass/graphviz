@@ -1,0 +1,26 @@
+digraph {
+	
+	IssuesUI[label = "issues-ui"];
+	IssuesAPI[label = "issues-api"];
+	VisitsUI[label = "visits-ui"];
+	VisitsAPI[label = "visits-api"];
+	ActionsUI[label = "actions-ui"];
+	ActionsAPI[label = "actions-api"];
+	ReportsUI[label = "reports-ui"];
+	ReportsAPI[label = "reports-api"];
+
+	UsersAPI[label = "users-api"];
+
+	IssuesUI->IssuesAPI;
+	VisitsUI->VisitsAPI;
+	ActionsUI->ActionsAPI;
+	ReportsUI->ReportsAPI;
+
+	IssuesUI->ActionsAPI;
+	IssuesUI->UsersAPI;
+
+	ActionsUI->UsersAPI;
+
+	UsersAPI->SomeUserService;
+	UsersAPI->SomeOtherUserService;
+}

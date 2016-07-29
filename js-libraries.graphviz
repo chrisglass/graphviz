@@ -1,0 +1,41 @@
+digraph {
+graph [rankdir="LR"];
+
+	subgraph cluster_modules {
+		label = "UI Components";
+		FilteredUserInput[label = "Real-Time Filtered Selectable List", shape=component];
+		InlineEditTextField[label = "In-line Edit TextField", shape=component];
+		InlineEditTextArea[label = "In-line Edit TextArea", shape=component];
+		InlineEditDropdown[label = "In-line Edit Dropdown Field", shape=component];
+		ScrollableListOfActions[label = "Scrollable (Paginated) List", shape=component];
+		LeftHandNavigation[label = "Left Hand Navigation Bar", shape=component];
+	}
+
+
+	IssuesUI[label = "issues-ui", shape=box];
+	
+	VisitsUI[label = "visits-ui", shape=box];
+	
+	ActionsUI[label = "actions-ui", shape=box];
+	
+	ReportsUI[label = "reports-ui", shape=box];
+	
+	IssuesUI->FilteredUserInput;
+	ActionsUI->FilteredUserInput;
+	ActionsUI->ScrollableListOfActions;
+
+	VisitsUI->ScrollableListOfActions;
+
+	IssuesUI->InlineEditTextArea;
+	IssuesUI->InlineEditTextField;
+	IssuesUI->InlineEditDropdown;
+	IssuesUI->ScrollableListOfActions;
+
+	ReportsUI->ScrollableListOfActions;
+
+	IssuesUI->LeftHandNavigation;
+	ActionsUI->LeftHandNavigation;
+	ReportsUI->LeftHandNavigation;
+	VisitsUI->LeftHandNavigation;
+	
+}

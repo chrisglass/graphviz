@@ -1,0 +1,42 @@
+digraph {
+	graph [rankdir="LR"];
+
+	subgraph cluster_modules {
+		label = "Libraries";
+		CheckmateFilter[label = "Play CheckmateFilter", shape=component];
+		AuthenticationClient[label = "Non Blocking AkkaHttp Authentication Client", shape=component];
+		AuthorisationClient[label = "Non Blocking AkkaHttp Authorisation Client", shape=component];
+		IssuesDomainModel[label = "Issues Domain Model", shape=component];
+		ActionsDomainModel[label = "Actions Domain Model", shape=component];
+	}
+
+	IssuesUI[label = "issues-ui", shape=box];
+	VisitsUI[label = "visits-ui", shape=box];
+
+	IssuesUI->CheckmateFilter;
+	VisitsUI->CheckmateFilter;
+
+	IssuesAPI[label = "issues-api", shape=box];	
+	VisitsAPI[label = "visits-api", shape=box];
+	ActionsAPI[label = "actions-api", shape=box];
+	ReportsAPI[label = "reports-api", shape=box];
+
+	IssuesAPI->IssuesDomainModel;
+	IssuesUI->IssuesDomainModel;
+	IssuesUI->ActionsDomainModel;
+
+	ActionsAPI->ActionsDomainModel;
+
+	IssuesAPI->AuthenticationClient;
+	VisitsAPI->AuthenticationClient;
+	ActionsAPI->AuthenticationClient;
+	ReportsAPI->AuthenticationClient;
+	IssuesAPI->AuthorisationClient;
+	VisitsAPI->AuthorisationClient;
+	ActionsAPI->AuthorisationClient;
+	ReportsAPI->AuthorisationClient;
+
+
+	
+	
+}
