@@ -6,6 +6,9 @@ digraph {
 
 	subgraph cluster_writes {
 		color = deeppink;
+
+		TransactionManager[label="Transaction Manager"];
+
 		Issues;
 		Actions;
 		Comments;
@@ -14,12 +17,13 @@ digraph {
 			color = white;
 
 			Plinth;
+			Archon;
 		}
 	}
 
 	subgraph cluster_reads {
 		color = deepskyblue;
-		UIAssets[label = "UI Assets\nHTML/CSS/JS"];
+		UIAssets[label = "UI Assets"];
 		Aggregator;
 	}
 
@@ -29,9 +33,10 @@ digraph {
 	Checkmate->UIAssets[color=deepskyblue];
 	Checkmate->Aggregator[color=deepskyblue];
 
-	Checkmate->Issues[color=deeppink];
-	Checkmate->Actions[color=deeppink];
-	Checkmate->Comments[color=deeppink];
+	Checkmate->TransactionManager[color=deeppink];
+	TransactionManager->Issues[color=deeppink];
+	TransactionManager->Actions[color=deeppink];
+	TransactionManager->Comments[color=deeppink];
 
 
 	Aggregator->Issues[color=deepskyblue];
@@ -40,6 +45,10 @@ digraph {
 
 	Aggregator->Plinth[color=deepskyblue];
 
-
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=deeppink];
+	Actions->Archon[color=deeppink];
+	Comments->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
 
 }

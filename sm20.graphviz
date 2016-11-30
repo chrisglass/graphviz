@@ -1,6 +1,7 @@
 digraph {
 	style=dotted;
 
+	User;
 	UI[label="UI (JS)"];
 	Checkmate;
 
@@ -14,20 +15,28 @@ digraph {
 			color = white;
 
 			Plinth;
+			Archon;
 		}
+
+		EmailNotifications[label="Email Notifications"];
 	}
 
 	subgraph cluster_reads {
 		color = deepskyblue;
-		UIAssets[label = "UI Assets\nHTML/CSS/JS"];
+		UIAssets[label = "UI Assets"];
 		Aggregator;
+		UINotifications[label = "UI Notifications"];
 	}
+
+	User->UI[color=deeppink];
+	User->UI[color=deepskyblue];
 
 	UI->Checkmate[color=deeppink];
 	UI->Checkmate[color=deepskyblue];
 
 	Checkmate->UIAssets[color=deepskyblue];
 	Checkmate->Aggregator[color=deepskyblue];
+	Checkmate->UINotifications[color=deepskyblue];
 
 	Checkmate->Issues[color=deeppink];
 	Checkmate->Actions[color=deeppink];
@@ -40,6 +49,13 @@ digraph {
 
 	Aggregator->Plinth[color=deepskyblue];
 
-
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=deeppink];
+	Actions->Archon[color=deeppink];
+	Comments->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
+	Archon->UINotifications[color=deeppink];
+	Archon->EmailNotifications[color=deeppink];
+	EmailNotifications->User[color=deeppink];
 
 }

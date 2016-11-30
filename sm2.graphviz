@@ -14,12 +14,13 @@ digraph {
 			color = white;
 
 			Plinth;
+			Archon;
 		}
 	}
 
 	subgraph cluster_reads {
 		color = deepskyblue;
-		UIAssets[label = "UI Assets\nHTML/CSS/JS"];
+		UIAssets[label = "UI Assets"];
 		Aggregator;
 	}
 
@@ -40,6 +41,10 @@ digraph {
 
 	Aggregator->Plinth[color=deepskyblue];
 
-
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=deeppink];
+	Actions->Archon[color=deeppink];
+	Comments->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
 
 }

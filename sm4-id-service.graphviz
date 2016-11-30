@@ -6,20 +6,26 @@ digraph {
 
 	subgraph cluster_writes {
 		color = deeppink;
-		Issues;
-		Actions;
-		Comments;
+
+		subgraph cluster_sm {
+			Issues;
+			Actions;
+			Comments;
+			IDService[label = "ID Service"];
+		}
+
 
 		subgraph cluster_platform {
 			color = white;
 
 			Plinth;
+			Archon;
 		}
 	}
 
 	subgraph cluster_reads {
 		color = deepskyblue;
-		UIAssets[label = "UI Assets\nHTML/CSS/JS"];
+		UIAssets[label = "UI Assets"];
 		Aggregator;
 	}
 
@@ -38,7 +44,19 @@ digraph {
 	Aggregator->Actions[color=deepskyblue];
 	Aggregator->Comments[color=deepskyblue];
 
+	Aggregator->IDService[color=deepskyblue];
+
 	Aggregator->Plinth[color=deepskyblue];
+
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=turquoise, dir=both];
+	Actions->Archon[color=turquoise, dir=both];
+	Comments->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
+
+	Archon->IDService[color=turquoise, dir=both];
+
+
 
 
 

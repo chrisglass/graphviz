@@ -1,0 +1,98 @@
+digraph {
+	style=dotted;
+
+	UI[label="UI (JS)"];
+	Checkmate;
+
+	subgraph cluster_writes {
+		color = deeppink;
+
+		subgraph cluster_issues {
+			Issues[label="Issues N1"];
+			Issues2[label="Issues N2"];
+			IssuesDB[label="DB"];
+		}
+
+		subgraph cluster_actions {
+			Actions[label="Actions N1"];
+			Actions2[label="Actions N2"];
+			ActionsDB[label="DB"];
+		}
+
+		subgraph cluster_comments {
+			Comments[label="Comments N1"];
+			Comments2[label="Comments N2"];
+			CommentsDB[label="DB"];
+		}
+
+		subgraph cluster_platform {
+			color = white;
+
+			Plinth;
+			Archon;
+		}
+	}
+
+	subgraph cluster_reads {
+		color = deepskyblue;
+		UIAssets[label = "UI Assets"];
+
+		subgraph cluster_aggregator {
+			Aggregator[label="Aggregator N1"];
+			Aggregator2[label="Aggregator N2"];
+
+			AggregatorDB[label="DB"];
+		}
+
+	}
+
+	UI->Checkmate[color=deeppink];
+	UI->Checkmate[color=deepskyblue];
+
+	Checkmate->UIAssets[color=deepskyblue];
+
+
+	Checkmate->Aggregator[color=deepskyblue];
+
+	Checkmate->Issues[color=deeppink];
+	Checkmate->Actions[color=deeppink];
+	Checkmate->Comments[color=deeppink];
+
+	Checkmate->Aggregator2[color=deepskyblue];
+
+	Checkmate->Issues2[color=deeppink];
+	Checkmate->Actions2[color=deeppink];
+	Checkmate->Comments2[color=deeppink];
+
+
+	Aggregator->Issues[color=deepskyblue];
+	Aggregator->Actions[color=deepskyblue];
+	Aggregator->Comments[color=deepskyblue];
+
+	Aggregator->Issues2[color=deepskyblue];
+	Aggregator->Actions2[color=deepskyblue];
+	Aggregator->Comments2[color=deepskyblue];
+
+	Aggregator->Plinth[color=deepskyblue];
+
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=deeppink];
+	Issues2->Archon[color=deeppink];
+	Actions->Archon[color=deeppink];
+	Actions2->Archon[color=deeppink];
+	Comments->Archon[color=deeppink];
+	Comments2->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
+	Archon->Aggregator2[color=deeppink];
+
+
+	Issues->IssuesDB;
+	Actions->ActionsDB;
+	Comments->CommentsDB;
+
+	Issues2->IssuesDB;
+	Actions2->ActionsDB;
+	Comments2->CommentsDB;
+	Aggregator->AggregatorDB;
+	Aggregator2->AggregatorDB;
+}

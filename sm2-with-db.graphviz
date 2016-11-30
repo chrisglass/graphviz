@@ -10,17 +10,25 @@ digraph {
 		Actions;
 		Comments;
 
+
+		IssuesDB[label="DB"];
+		ActionsDB[label="DB"];
+		CommentsDB[label="DB"];
+
 		subgraph cluster_platform {
 			color = white;
 
 			Plinth;
+			Archon;
 		}
 	}
 
 	subgraph cluster_reads {
 		color = deepskyblue;
-		UIAssets[label = "UI Assets\nHTML/CSS/JS"];
+		UIAssets[label = "UI Assets"];
 		Aggregator;
+
+		AggregatorDB[label="DB"];
 	}
 
 	UI->Checkmate[color=deeppink];
@@ -40,6 +48,15 @@ digraph {
 
 	Aggregator->Plinth[color=deepskyblue];
 
+	Plinth->Archon[color=deeppink];
+	Issues->Archon[color=deeppink];
+	Actions->Archon[color=deeppink];
+	Comments->Archon[color=deeppink];
+	Archon->Aggregator[color=deeppink];
 
 
+	Issues->IssuesDB;
+	Actions->ActionsDB;
+	Comments->CommentsDB;
+	Aggregator->AggregatorDB;
 }
